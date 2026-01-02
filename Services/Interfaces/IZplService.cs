@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace zebra_label_editor.Services.Interfaces
 {
     // The "I" at the start is a naming convention for "Interface"
-    internal interface IZplService
+    public interface IZplService
     {
         // 1. Definition: We need a method that takes a file path and returns the text content
         string LoadZplTemplate(string filePath);
