@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36221.1 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "zebra label editor", "zebra label editor.csproj", "{49223847-556A-4C7D-B2AC-7FB2CBBCA727}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{49223847-556A-4C7D-B2AC-7FB2CBBCA727}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49223847-556A-4C7D-B2AC-7FB2CBBCA727}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49223847-556A-4C7D-B2AC-7FB2CBBCA727}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49223847-556A-4C7D-B2AC-7FB2CBBCA727}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {02C7AAE5-95BA-4B02-95D5-98D7E4B89BB4}
+	EndGlobalSection
+EndGlobal
