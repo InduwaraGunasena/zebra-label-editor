@@ -52,8 +52,6 @@
 
 
                 <!-- File input box & Browse button -->
-
-
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -62,7 +60,7 @@
 
                     <Grid Grid.Column="0">
                         <TextBox Text="{Binding FilePath}" 
-                                 Height="25" VerticalContentAlignment="Center" Padding="5"
+                                 Height="30" VerticalContentAlignment="Center" Padding="5"
                                  IsReadOnly="True" Background="White" BorderBrush="#CCC"/>
 
                         <TextBlock Text="Select an label file..." 
@@ -85,10 +83,8 @@
                     </Grid>
 
                     <Button Grid.Column="2" Content="Browse"  Margin="10,0,0,0"
-                            Command="{Binding BrowseCommand}" Height="25" />
+                            Command="{Binding BrowseCommand}" Height="30" />
                 </Grid>
-
-
 
 
                 <!-- ERROR message in Red color -->
