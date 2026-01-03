@@ -14,8 +14,9 @@ namespace zebra_label_editor.ViewModels
         private readonly ImportViewModel _importVm;
         private readonly MappingViewModel _mappingVm;
         private readonly SelectionViewModel _selectionVm;
-        private readonly PrintConfigViewModel _printConfigVm; // You need to create this class!
-        private readonly SaveConfigViewModel _saveConfigVm;   // You need to create this class!
+        private readonly PrintConfigViewModel _printConfigVm; 
+        private readonly SaveConfigViewModel _saveConfigVm;  
+        private readonly ProcessingViewModel _processingVm;
 
         // This property determines what is shown on screen!
         [ObservableProperty]
@@ -27,13 +28,15 @@ namespace zebra_label_editor.ViewModels
             MappingViewModel mappingVm,
             SelectionViewModel selectionVm,
             PrintConfigViewModel printVm,
-            SaveConfigViewModel saveVm)
+            SaveConfigViewModel saveVm,
+            ProcessingViewModel processingVm)
         {
             _importVm = importVm;
             _mappingVm = mappingVm;
             _selectionVm = selectionVm;
             _printConfigVm = printVm;
             _saveConfigVm = saveVm;
+            _processingVm = processingVm;
 
             // "Next" Logic
             _importVm.NavigateToMappingRequested += OnNavigateToMapping;
@@ -45,7 +48,22 @@ namespace zebra_label_editor.ViewModels
             _selectionVm.NavigateBackRequested += () => CurrentViewModel = _mappingVm;
             _selectionVm.NavigateNextRequested += OnSelectionMade; // The Branching Logic!
 
-            // 2. Start with the Import Screen
+            // 1. Wire Print Config
+            _printConfigVm.NavigateBackRequested += () => CurrentViewModel = _selectionVm;
+            _printConfigVm.NavigateNextRequested += StartPrintProcess;
+
+            // 2. Wire Save Config
+            _saveConfigVm.NavigateBackRequested += () => CurrentViewModel = _selectionVm;
+            _saveConfigVm.NavigateNextRequested += StartSaveProcess;
+
+            // 3. Wire Processing (Finish Button)
+            _processingVm.NavigateFinishRequested += () =>
+            {
+                // Reset everything and go back to start
+                CurrentViewModel = _importVm;
+            };
+
+            // Start the application on the Import Screen
             CurrentViewModel = _importVm;
         }
 
@@ -77,6 +95,37 @@ namespace zebra_label_editor.ViewModels
                 // Go to Save Config
                 CurrentViewModel = _saveConfigVm;
             }
+        }
+
+        private void StartPrintProcess()
+        {
+            // GATHER DATA
+            string zplTemplate = System.IO.File.ReadAllText(_importVm.FilePath); // Get the raw ZPL
+            string excelPath = _mappingVm.ExcelFilePath;
+            var mapping = _mappingVm.MappingRows.ToList(); // The Map
+            string printerName = _printConfigVm.SelectedPrinter;
+
+            // SWITCH VIEW
+            CurrentViewModel = _processingVm;
+
+            // START WORK
+            _processingVm.StartPrinting(zplTemplate, excelPath, mapping, printerName);
+        }
+
+        private void StartSaveProcess()
+        {
+            // GATHER DATA
+            string zplTemplate = System.IO.File.ReadAllText(_importVm.FilePath);
+            string excelPath = _mappingVm.ExcelFilePath;
+            var mapping = _mappingVm.MappingRows.ToList();
+            string savePath = _saveConfigVm.SavePath;
+            string fileName = _saveConfigVm.FileName;
+
+            // SWITCH VIEW
+            CurrentViewModel = _processingVm;
+
+            // START WORK
+            _processingVm.StartSaving(zplTemplate, excelPath, mapping, savePath, fileName);
         }
     }
 }
