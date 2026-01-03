@@ -48,8 +48,8 @@
 
                 <ComboBox ItemsSource="{Binding AvailablePrinters}" 
                       SelectedItem="{Binding SelectedPrinter}"
-                          VerticalContentAlignment="Center"
-                      Height="30" Margin="0,0,0,20" SelectionChanged="ComboBox_SelectionChanged"/>
+                      VerticalContentAlignment="Center"
+                      Height="30" Margin="0,0,0,20"/>
 
                 <Border Background="#FFF4E5" BorderBrush="#FFFFA879" BorderThickness="1" Padding="10" Margin="0,0,0,30" CornerRadius="5">
                     <StackPanel Orientation="Horizontal">
