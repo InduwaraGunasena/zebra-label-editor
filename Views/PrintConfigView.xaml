@@ -6,35 +6,84 @@
              xmlns:local="clr-namespace:zebra_label_editor.Views"
              xmlns:vm="clr-namespace:zebra_label_editor.ViewModels"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="380" d:DesignWidth="520" d:Background="#EBEBEB">
 
 
     <d:UserControl.DataContext>
         <vm:PrintConfigViewModel/>
     </d:UserControl.DataContext>
 
-    <Grid Background="White" Margin="20">
-        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="400">
-            <TextBlock Text="Step 4: Printer Configuration" FontSize="24" FontWeight="Bold" Margin="0,0,0,30"/>
 
-            <TextBlock Text="Select Printer:" Margin="0,0,0,5" Foreground="Gray"/>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="80"/>
+            <RowDefinition Height="*" MinHeight="250"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
 
-            <ComboBox ItemsSource="{Binding AvailablePrinters}" 
-                      SelectedItem="{Binding SelectedPrinter}"
-                      Height="35" Margin="0,0,0,20"/>
+        <Grid Grid.Row="0" Background="#0078D7">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
-            <Border Background="#FFF4E5" BorderBrush="#FFBB96" BorderThickness="1" Padding="10" Margin="0,0,0,30" CornerRadius="5">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="⚠️" FontSize="20" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                    <TextBlock Text="Make sure your Zebra printer is calibrated correctly before proceeding." 
-                               TextWrapping="Wrap" VerticalAlignment="Center" Width="300" FontSize="12"/>
-                </StackPanel>
-            </Border>
+            <!-- Right Section: Image -->
+            <Image Grid.Column="1" Source="/Assets/Images/print.png" 
+                   Width="50" Height="50" Margin="0,0,30,0" RenderOptions.BitmapScalingMode="HighQuality"/>
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Content="&lt; Back" Command="{Binding GoBackCommand}" Width="100" Padding="10,5" Margin="0,0,10,0"/>
-                <Button Content="Print Now &gt;" Command="{Binding NextCommand}" Width="120" Padding="10,5" Background="LightBlue"/>
+            <!-- Left Section: Title and Description -->
+            <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="30,0,0,0">
+                <TextBlock Text="Print edited labels" 
+                           Foreground="White" FontWeight="Bold" FontSize="13"/>
+                <TextBlock Text="Select your printer. Then click 'Next' to proceed." 
+                           Foreground="#E6E6E6" FontSize="12" Margin="0,5,0,0" TextWrapping="Wrap"/>
             </StackPanel>
-        </StackPanel>
+        </Grid>
+
+        <!-- Selecting printer section -->
+        <Grid Grid.Row="1" HorizontalAlignment="Stretch">
+            <StackPanel MinWidth="420" MaxWidth="700" Margin="40 20 40 0">
+               
+                <TextBlock Text="Select Printer:" Margin="0,0,0,5" Foreground="Gray"/>
+
+                <ComboBox ItemsSource="{Binding AvailablePrinters}" 
+                      SelectedItem="{Binding SelectedPrinter}"
+                          VerticalContentAlignment="Center"
+                      Height="30" Margin="0,0,0,20" SelectionChanged="ComboBox_SelectionChanged"/>
+
+                <Border Background="#FFF4E5" BorderBrush="#FFFFA879" BorderThickness="1" Padding="10" Margin="0,0,0,30" CornerRadius="5">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Grid.Column="1" Source="/Assets/Images/warning.png" 
+                               Width="40" Height="40" Margin="0,0,30,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                        <TextBlock Text="Make sure your Zebra printer is calibrated correctly before proceeding." 
+                   TextWrapping="Wrap" VerticalAlignment="Center" Width="300" FontSize="12"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Grid>
+
+        <!-- Next, Back Button -->
+        <Border Grid.Row="2" Background="#D9D9D9" BorderBrush="#CCC" BorderThickness="0,1,0,0">
+            <Grid Margin="30,0,30,0" >
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Back button (No need this button for this interface) -->
+                <Button x:Name="BackButton" Grid.Column="0" Content="Back"
+                 VerticalAlignment="Center" HorizontalAlignment="Right"
+                 Height="25" Width="70" Command="{Binding GoBackCommand}" Margin="0 0 10 0" />
+
+                <!-- Next button -->
+                <Button x:Name="NextButton" Grid.Column="1" Content="Next"
+                 VerticalAlignment="Center" HorizontalAlignment="Right" 
+                 Command="{Binding NextCommand}"
+                 Height="25" Width="70" />
+
+            </Grid>
+        </Border>
+
     </Grid>
 </UserControl>
