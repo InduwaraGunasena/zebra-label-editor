@@ -2,8 +2,32 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:zebra_label_editor"
-             StartupUri="MainWindow.xaml">
+             xmlns:vm="clr-namespace:zebra_label_editor.ViewModels"
+             xmlns:views="clr-namespace:zebra_label_editor.Views"
+             Startup="Application_Startup">
     <Application.Resources>
-         
+        <DataTemplate DataType="{x:Type vm:ImportViewModel}">
+            <views:ImportView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:MappingViewModel}">
+            <views:MappingView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:SelectionViewModel}">
+            <views:SelectionView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:PrintConfigViewModel}">
+            <views:PrintConfigView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:SaveConfigViewModel}">
+            <views:SaveConfigView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:ProcessingViewModel}">
+            <views:ProcessingView/>
+        </DataTemplate>
     </Application.Resources>
 </Application>
