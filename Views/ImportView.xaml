@@ -6,43 +6,128 @@
              xmlns:local="clr-namespace:zebra_label_editor.Views"
              xmlns:vm="clr-namespace:zebra_label_editor.ViewModels"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="380" d:DesignWidth="520" d:Background="#EBEBEB">
 
 
     <d:UserControl.DataContext>
         <vm:ImportViewModel/>
     </d:UserControl.DataContext>
 
-    <Grid Background="White">
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="400">
+    <Grid>
 
-            <TextBlock Text="Step 1: Import Label Design" 
-                       FontSize="24" FontWeight="Bold" Margin="0,0,0,20" 
-                       HorizontalAlignment="Center"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="80"/>
+            <RowDefinition Height="*" MinHeight="250"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
 
-            <TextBlock Text="Select your Zebra Designer (.prn/.txt) file:" 
-                       Margin="0,0,0,5" Foreground="Gray"/>
+        <Grid Grid.Row="0" Background="#0078D7">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
-            <TextBox Text="{Binding FilePath}" 
-                     Padding="5" IsReadOnly="True" Margin="0,0,0,10"/>
+            <!-- Right Section: Image -->
+            <Image Grid.Column="1" Source="/Assets/Images/open-label.png" 
+                   Width="50" Height="50" Margin="0,0,30,0" RenderOptions.BitmapScalingMode="HighQuality"/>
 
-            <Button Content="Browse..." 
-                    Command="{Binding BrowseCommand}"
-                    Padding="10,5" HorizontalAlignment="Right" Width="100"/>
-
-            <TextBlock Text="File Preview:" Margin="0,20,0,5" FontWeight="SemiBold"/>
-
-            <Border BorderBrush="LightGray" BorderThickness="1" Height="100">
-                <ScrollViewer>
-                    <TextBlock Text="{Binding PreviewContent}" 
-                               Padding="5" TextWrapping="Wrap" FontFamily="Consolas"/>
-                </ScrollViewer>
-            </Border>
-
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-                <Button Content="Next >" Command="{Binding NextCommand}" Width="100" Padding="10,5" Background="LightBlue"/>
+            <!-- Left Section: Title and Description -->
+            <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="30,0,0,0">
+                <TextBlock Text="Select your label file" 
+                           Foreground="White" FontWeight="Bold" FontSize="13"/>
+                <TextBlock Text="Select a label design file and click 'Next' to proceed." 
+                           Foreground="#E6E6E6" FontSize="12" Margin="0,5,0,0" TextWrapping="Wrap"/>
             </StackPanel>
+        </Grid>
 
-        </StackPanel>
+
+        <!-- StackPanel to arrange Browse option vertically -->
+        <Grid Grid.Row="1" HorizontalAlignment="Stretch">
+            <StackPanel MinWidth="420" MaxWidth="700" Margin="40 20 40 0">
+
+                <!-- File selecting description text -->
+                <TextBlock x:Name="FileSelectDescription" FontSize="11" VerticalAlignment="Top" 
+               Text="Choose your label design file here." 
+               Margin="0 0 0 10" Height="16"/>
+
+
+                <!-- File input box & Browse button -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="70" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Textbox -->
+                    <TextBox x:Name="FilePath" Grid.Column="0" 
+                             VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0 0 10 0"
+                             Height="25" Width="Auto" Text="{Binding FilePath}"
+                             VerticalContentAlignment="Center" FontSize="11" IsReadOnly="True"/>
+
+                    <Button x:Name="BrowseButton" Grid.Column="1" Content="Browse"
+                            VerticalAlignment="Center" HorizontalAlignment="Right" 
+                            Command="{Binding BrowseCommand}" Height="25" Width="70" />
+
+                </Grid>
+
+                <!-- ERROR message in Red color -->
+                <TextBlock Text="{Binding ErrorMessage}" 
+                           Foreground="Red" FontSize="11" Margin="0,10,0,0"
+                           TextWrapping="Wrap" MinWidth="420"/>
+
+                <!-- Tip help content -->
+                <Border Background="#E1F0FF" BorderBrush="#0078D7" BorderThickness="1" 
+                        CornerRadius="4" Margin="0,15,0,0" Padding="10">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Image Grid.Column="0" Source="/Assets/Images/info-popup.png" VerticalAlignment="Center"
+                               Width="30" Height="30" Margin="0,0,10,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+
+                        <!-- Combined TextBlock using Inlines to bold specific words -->
+                        <TextBlock Grid.Column="1" FontSize="11" Foreground="#005A9E" TextWrapping="Wrap" VerticalAlignment="Center">
+                            <Run FontWeight="Bold" Text="Tip: "/>
+                            <Run Text="Ensure your ZebraDesigner file " />
+                            <Run FontWeight="Bold" Text="(.prn/.txt) " />
+                            <Run Text="uses placeholders within " />
+                            <Run FontWeight="Bold" Text="square brackets " />
+                            <Run Text="like " />
+                            <Run FontWeight="Bold" Text="[" />
+                            <Run Text="ItemName" />
+                            <Run FontWeight="Bold" Text="]" />
+                            <Run Text="." />
+                        </TextBlock>
+                    </Grid>
+                </Border>
+
+            </StackPanel>
+        </Grid>
+
+        <!-- Next, Back Button -->
+        <Border Grid.Row="2" Background="#D9D9D9" BorderBrush="#CCC" BorderThickness="0,1,0,0">
+            <Grid Margin="30,0,30,0" >
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Back button (No need this button for this interface) -->
+                <Button x:Name="BackButton" Grid.Column="0" Content="Back"
+                        VerticalAlignment="Center" HorizontalAlignment="Right" Visibility="Hidden"
+                        Height="25" Width="70" />
+
+                <!-- Next button -->
+                <Button x:Name="NextButton" Grid.Column="1" Content="Next"
+                        VerticalAlignment="Center" HorizontalAlignment="Right" 
+                        Command="{Binding NextCommand}" IsEnabled="{Binding IsNextEnabled}"
+                        Height="25" Width="70" />
+
+            </Grid>
+        </Border>
+
     </Grid>
 </UserControl>

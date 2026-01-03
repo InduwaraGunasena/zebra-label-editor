@@ -18,12 +18,17 @@ namespace zebra_label_editor.ViewModels
     {
         private readonly IZplService _zplService;
 
-        // The UI will display this text. When we set it, the UI updates automatically.
-        [ObservableProperty]
+        // The File Path
+        [ObservableProperty] // The UI will display this text. When we set it, the UI updates automatically.
+        [NotifyPropertyChangedFor(nameof(IsNextEnabled))] // Update button when path changes       
         private string _filePath;
 
+        // Error Message (Red Text)
         [ObservableProperty]
-        private string _previewContent;
+        private string _errorMessage;
+
+        // Controls if the Next button is clickable
+        public bool IsNextEnabled => !string.IsNullOrEmpty(FilePath) && string.IsNullOrEmpty(ErrorMessage);
 
         // Constructor: We ask for the ZplService here (Dependency Injection)
         public ImportViewModel(IZplService zplService)
@@ -38,6 +43,8 @@ namespace zebra_label_editor.ViewModels
         [RelayCommand]
         private async Task Browse()
         {
+            ErrorMessage = string.Empty; // Reset error
+
             // 1. Open the File Picker
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
@@ -47,23 +54,57 @@ namespace zebra_label_editor.ViewModels
 
             if (openFileDialog.ShowDialog() == true)
             {
-                // 2. Save the path so the UI shows it
-                FilePath = openFileDialog.FileName;
+                string selectedPath = openFileDialog.FileName;
 
-                // 3. Use our Service to read the file
+                // Basic Validation: Check if file exists and is readable
+                if (!File.Exists(selectedPath))
+                {
+                    ErrorMessage = "Error: File does not exist.";
+                    FilePath = string.Empty;
+                    OnPropertyChanged(nameof(IsNextEnabled));
+                    return;
+                }
+                
                 try
                 {
-                    string content = _zplService.LoadZplTemplate(FilePath);
+                    // Read the content to validate it
+                    string content = await File.ReadAllTextAsync(selectedPath);
 
-                    // Show the first 500 characters as a preview
-                    PreviewContent = content.Length > 500 ? content.Substring(0, 500) + "..." : content;
+                    // VALIDATION CHECK 
+                    if (!_zplService.IsValidZpl(content))
+                    {
+                        // File exists, but content is garbage
+                        ErrorMessage = "Error: Invalid ZPL file. Content must contain '^XA' command.";
+                        FilePath = string.Empty; // Clear path so they can't click Next
 
-                    // (Later we will extract placeholders here)
+                    }
+                    else
+                    {
+                        // Check for editable placeholders
+                        if (!_zplService.IsValidZplWithEditablePlaceholders(content))
+                        {
+                            ErrorMessage = "Error: ZPL file must contain at least one editable placeholder in the format [PLACEHOLDER].";
+                            FilePath = string.Empty; // Clear path so they can't click Next
+                            OnPropertyChanged(nameof(IsNextEnabled));
+                            return;
+                        }
+                        else
+                        {
+                            // File is good!
+                            FilePath = selectedPath;
+                            ErrorMessage = string.Empty;
+                        }
+                    }
                 }
-                catch (IOException ex)
+                catch (Exception ex)
                 {
-                    MessageBox.Show($"Error reading file: {ex.Message}");
+                    ErrorMessage = $"Error: Could not read file. {ex.Message}";
+                    FilePath = string.Empty;
                 }
+                
+
+                // Refresh the button state manually since ErrorMessage changed
+                OnPropertyChanged(nameof(IsNextEnabled));
             }
         }
 
@@ -74,17 +115,18 @@ namespace zebra_label_editor.ViewModels
         private void Next()
         {
             // Validation: Don't move forward if no file is selected
-            if (string.IsNullOrEmpty(FilePath))
+            if (!IsNextEnabled) return;
+
+            try
             {
-                MessageBox.Show("Please select a file first.");
-                return;
+                var placeholders = _zplService.ExtractPlaceholders(File.ReadAllText(FilePath));
+                NavigateToMappingRequested?.Invoke(placeholders);
             }
-
-            // 2. Extract Placeholders using the service
-            var placeholders = _zplService.ExtractPlaceholders(File.ReadAllText(FilePath));
-
-            // 3. Trigger the event to move to the next screen
-            NavigateToMappingRequested?.Invoke(placeholders);
+            catch (Exception ex)
+            {
+                ErrorMessage = "Critical Error parsing file: " + ex.Message;
+                OnPropertyChanged(nameof(IsNextEnabled));
+            }
         }
     }
 }
