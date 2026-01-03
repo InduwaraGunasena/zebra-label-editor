@@ -8,6 +8,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Collections.Generic;
 using zebra_label_editor.Services.Implementations;
 using zebra_label_editor.ViewModels;
 
@@ -22,14 +23,7 @@ namespace zebra_label_editor
         {
             InitializeComponent();
 
-            // 1. Create the Service
-            var zplService = new ZplService();
-
-            // 2. Create the ViewModel and give it the Service
-            var viewModel = new ImportViewModel(zplService);
-
-            // 3. Connect the View to the ViewModel
-            MyImportView.DataContext = viewModel;
+        
         }
     }
 }

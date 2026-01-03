@@ -9,6 +9,6 @@
         Title="Zebra Label Editor" Height="450" Width="800">
     
     <Grid>
-        <views:ImportView x:Name="MyImportView" />
+        <ContentControl Content="{Binding CurrentViewModel}" />
     </Grid>
 </Window>
