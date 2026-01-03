@@ -62,7 +62,7 @@
 
                     <Grid Grid.Column="0">
                         <TextBox Text="{Binding ExcelFilePath}" 
-                                 Height="25" VerticalContentAlignment="Center" Padding="5"
+                                 Height="30" VerticalContentAlignment="Center" Padding="5"
                                  IsReadOnly="True" Background="White" BorderBrush="#CCC"/>
 
                         <TextBlock Text="Select an excel file..." 
@@ -86,7 +86,7 @@
 
                     <Button Grid.Column="1" Content="Browse" 
                             Command="{Binding LoadExcelCommand}"
-                            Margin="10,0,0,0" Height="25"/>
+                            Margin="10,0,0,0" Height="30"/>
                 </Grid>
 
                 <!-- Table for mapping -->
