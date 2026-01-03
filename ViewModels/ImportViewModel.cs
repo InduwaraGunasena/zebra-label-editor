@@ -66,5 +66,25 @@ namespace zebra_label_editor.ViewModels
                 }
             }
         }
+
+        // 1. EVENT: "Hey MainViewModel, I'm done! Here is the list of placeholders."
+        public Action<List<string>>? NavigateToMappingRequested;
+
+        [RelayCommand]
+        private void Next()
+        {
+            // Validation: Don't move forward if no file is selected
+            if (string.IsNullOrEmpty(FilePath))
+            {
+                MessageBox.Show("Please select a file first.");
+                return;
+            }
+
+            // 2. Extract Placeholders using the service
+            var placeholders = _zplService.ExtractPlaceholders(File.ReadAllText(FilePath));
+
+            // 3. Trigger the event to move to the next screen
+            NavigateToMappingRequested?.Invoke(placeholders);
+        }
     }
 }

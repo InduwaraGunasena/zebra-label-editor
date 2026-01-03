@@ -40,7 +40,7 @@
             </Border>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-                <Button Content="Next >" Width="100" Padding="10,5" Background="LightBlue"/>
+                <Button Content="Next >" Command="{Binding NextCommand}" Width="100" Padding="10,5" Background="LightBlue"/>
             </StackPanel>
 
         </StackPanel>
