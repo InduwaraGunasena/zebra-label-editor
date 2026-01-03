@@ -28,7 +28,7 @@ namespace zebra_label_editor.Models
 
         // 5. Helper boolean to show/hide the "Constant" text box in the UI
         // We update this whenever SelectedSource changes
-        public bool IsConstantSelected => SelectedSource == "<Constant Value>";
+        public bool IsConstantSelected => SelectedSource == "Constant Value";
 
         // When the user changes the Dropdown, we check if we need to show the input box
         partial void OnSelectedSourceChanged(string value)

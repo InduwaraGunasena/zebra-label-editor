@@ -19,6 +19,10 @@ namespace zebra_label_editor.ViewModels
         [ObservableProperty]
         private string _excelFilePath;
 
+        public MappingViewModel()
+        {
+        }
+
         public MappingViewModel(IExcelService excelService)
         {
             _excelService = excelService;
@@ -31,7 +35,7 @@ namespace zebra_label_editor.ViewModels
 
             // Initially, we don't have Excel headers yet, so the dropdown is empty 
             // or just has the special options
-            var initialOptions = new List<string> { "<Empty>", "<Constant Value>" };
+            var initialOptions = new List<string> { "Empty", "Constant Value" };
 
             foreach (var placeholder in zplPlaceholders)
             {
@@ -39,7 +43,7 @@ namespace zebra_label_editor.ViewModels
                 {
                     ZplPlaceholder = placeholder,
                     AvailableSources = initialOptions,
-                    SelectedSource = "<Empty>" // Default
+                    SelectedSource = "Empty" // Default
                 });
             }
         }
@@ -61,8 +65,8 @@ namespace zebra_label_editor.ViewModels
                     // 2. Create the full dropdown list (Headers + Special Options)
                     var fullOptions = new List<string>();
                     fullOptions.AddRange(headers);       // Add Excel Columns
-                    fullOptions.Add("<Constant Value>"); // Add Special Option
-                    fullOptions.Add("<Empty>");          // Add Special Option
+                    fullOptions.Add("Constant Value"); // Add Special Option
+                    fullOptions.Add("Empty");          // Add Special Option
 
                     // 3. Update every row in the table with these new options
                     foreach (var row in MappingRows)
