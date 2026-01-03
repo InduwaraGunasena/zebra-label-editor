@@ -17,5 +17,11 @@ namespace zebra_label_editor.Services.Interfaces
 
         // 3. Definition: We need a method that swaps [Placeholders] for real data
         string MergeData(string zplTemplate, Dictionary<string, string> dataMap);
+
+        // 4. Definition: We need a method that validates ZPL content
+        bool IsValidZpl(string zplContent);
+
+        // 5. Definition: We need a method that validates ZPL content for correct editing placeholders
+        bool IsValidZplWithEditablePlaceholders(string zplContent);
     }
 }

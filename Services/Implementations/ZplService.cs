@@ -55,5 +55,31 @@ namespace zebra_label_editor.Services.Implementations
 
             return finalZpl;
         }
+
+        public bool IsValidZpl(string zplContent)
+        {
+            if (string.IsNullOrWhiteSpace(zplContent))
+                return false;
+
+            // 1. Check for standard ZPL Start Command (^XA)
+            // We use OrdinalIgnoreCase to catch ^xa or ^XA
+            bool hasStart = zplContent.Contains("^XA", StringComparison.OrdinalIgnoreCase);
+
+            // 2. Optional: You could also check for ^XZ (End), but ^XA is the critical one.
+
+            return hasStart;
+        }
+
+        public bool IsValidZplWithEditablePlaceholders(string zplContent)
+        {
+            if (string.IsNullOrWhiteSpace(zplContent))
+                return false;
+            // First, check if it's valid ZPL
+            if (!IsValidZpl(zplContent))
+                return false;
+            // Next, check for at least one placeholder pattern [LikeThis]
+            var matches = _placeholderPattern.Matches(zplContent);
+            return matches.Count > 0;
+        }
     }
 }
