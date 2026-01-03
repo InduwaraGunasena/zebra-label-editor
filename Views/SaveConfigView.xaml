@@ -6,37 +6,114 @@
              xmlns:local="clr-namespace:zebra_label_editor.Views"
              xmlns:vm="clr-namespace:zebra_label_editor.ViewModels"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+              d:DesignHeight="380" d:DesignWidth="520" d:Background="#EBEBEB">
+    
     <d:UserControl.DataContext>
         <vm:SaveConfigViewModel/>
     </d:UserControl.DataContext>
 
-    <Grid Background="White" Margin="20">
-        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="400">
-            <TextBlock Text="Step 4: Save Configuration" FontSize="24" FontWeight="Bold" Margin="0,0,0,30"/>
 
-            <TextBlock Text="File Name:" Margin="0,0,0,5" Foreground="Gray"/>
-            <TextBox Text="{Binding FileName}" Padding="5" Margin="0,0,0,15"/>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="80"/>
+            <RowDefinition Height="*" MinHeight="250"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
 
-            <TextBlock Text="Format:" Margin="0,0,0,5" Foreground="Gray"/>
-            <ComboBox ItemsSource="{Binding Formats}" 
-                      SelectedItem="{Binding SelectedFormat}"
-                      Padding="5" Margin="0,0,0,15"/>
+        <Grid Grid.Row="0" Background="#0078D7">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
-            <TextBlock Text="Save Location:" Margin="0,0,0,5" Foreground="Gray"/>
-            <Grid Margin="0,0,0,30">
+            <!-- Right Section: Image -->
+            <Image Grid.Column="1" Source="/Assets/Images/save.png" 
+               Width="50" Height="50" Margin="0,0,30,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+
+            <!-- Left Section: Title and Description -->
+            <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="30,0,0,0">
+                <TextBlock Text="Save edited labels as a file" 
+                       Foreground="White" FontWeight="Bold" FontSize="13"/>
+                <TextBlock Text="Select appropriate file type and save location. Then click 'Next' to proceed." 
+                       Foreground="#E6E6E6" FontSize="12" Margin="0,5,0,0" TextWrapping="Wrap"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Saving config sections -->
+        <Grid Grid.Row="1" HorizontalAlignment="Stretch">
+            <StackPanel MinWidth="420" MaxWidth="700" Margin="40 20 40 0">
+
+                <TextBlock Text="File Name:" Margin="0,0,0,5" Foreground="Gray"/>
+                <TextBox Text="{Binding FileName}" Padding="5" Margin="0,0,0,15" Height="30"/>
+
+                <TextBlock Text="Format:" Margin="0,0,0,5" Foreground="Gray"/>
+                <ComboBox ItemsSource="{Binding Formats}" 
+                          SelectedItem="{Binding SelectedFormat}"
+                          Padding="5" Margin="0,0,0,15" Height="30"/>
+
+                <TextBlock Text="Save Location:" Margin="0,0,0,5" Foreground="Gray"/>
+             
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="90"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0">
+                        <TextBox Text="{Binding SavePath}"
+                                 Height="30" VerticalContentAlignment="Center" Padding="5"
+                                 IsReadOnly="True" Background="White" BorderBrush="#CCC"/>          
+
+                        <TextBlock Text="Select the saving path..." 
+                                    Foreground="LightGray" FontStyle="Normal" 
+                                    VerticalAlignment="Center" Margin="8,0,0,0" IsHitTestVisible="False">        
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SavePath}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding SavePath}" Value="">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
+
+                    <Button Grid.Column="2" Content="Browse"  Margin="10,0,0,0"
+                            Command="{Binding BrowseCommand}" Height="30" />
+                </Grid>
+
+            </StackPanel>
+        </Grid>
+
+
+        <!-- Next, Back Button -->
+        <Border Grid.Row="2" Background="#D9D9D9" BorderBrush="#CCC" BorderThickness="0,1,0,0">
+            <Grid Margin="30,0,30,0" >
+
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <TextBox Text="{Binding SavePath}" Padding="5" IsReadOnly="True" Background="#F5F5F5"/>
-                <Button Grid.Column="1" Content="..." Command="{Binding BrowseCommand}" Width="40" Margin="5,0,0,0"/>
-            </Grid>
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Content="&lt; Back" Command="{Binding GoBackCommand}" Width="100" Padding="10,5" Margin="0,0,10,0"/>
-                <Button Content="Process &gt;" Command="{Binding NextCommand}" Width="100" Padding="10,5" Background="LightBlue"/>
-            </StackPanel>
-        </StackPanel>
+                <!-- Back button (No need this button for this interface) -->
+                <Button x:Name="BackButton" Grid.Column="0" Content="Back"
+                         VerticalAlignment="Center" HorizontalAlignment="Right"
+                         Height="25" Width="70" Command="{Binding GoBackCommand}" Margin="0 0 10 0" />
+
+                <!-- Next button -->
+                <Button x:Name="NextButton" Grid.Column="1" Content="Next"
+                         VerticalAlignment="Center" HorizontalAlignment="Right" 
+                         Command="{Binding NextCommand}"
+                         Height="25" Width="70" />
+
+            </Grid>
+        </Border>
+
+
     </Grid>
 </UserControl>
