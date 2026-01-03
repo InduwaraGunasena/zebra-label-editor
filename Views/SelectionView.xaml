@@ -5,98 +5,146 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:zebra_label_editor.Views"
              xmlns:vm="clr-namespace:zebra_label_editor.ViewModels"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             mc:Ignorable="d"
+             d:DesignHeight="380" d:DesignWidth="520" d:Background="#EBEBEB">
 
 
     <d:UserControl.DataContext>
         <vm:SelectionViewModel/>
     </d:UserControl.DataContext>
 
-    <Grid Background="White" Margin="20">
-        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="400">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="80"/>
+            <RowDefinition Height="*" MinHeight="250"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
 
-            <TextBlock Text="Step 3: Choose Output Method" 
-                       FontSize="24" FontWeight="Bold" 
-                       HorizontalAlignment="Center" Margin="0,0,0,30"/>
 
-            <Button Command="{Binding SelectPrintCommand}" 
-                    Height="80" Margin="0,0,0,15"
-                    Cursor="Hand">
-                <Button.Style>
-                    <Style TargetType="Button">
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="Button">
-                                    <Border x:Name="border" BorderBrush="Gray" BorderThickness="1" Background="White" CornerRadius="5">
-                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0">
-                                            <TextBlock Text="🖨️" FontSize="30" VerticalAlignment="Center"/>
-                                            <StackPanel Margin="20,0,0,0" VerticalAlignment="Center">
-                                                <TextBlock Text="Print Labels" FontSize="18" FontWeight="SemiBold"/>
-                                                <TextBlock Text="Send directly to a Zebra Printer" Foreground="Gray"/>
-                                            </StackPanel>
-                                        </StackPanel>
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <DataTrigger Binding="{Binding IsPrintSelected}" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#E6F7FF"/>
-                                            <Setter TargetName="border" Property="BorderBrush" Value="#1890FF"/>
-                                            <Setter TargetName="border" Property="BorderThickness" Value="2"/>
-                                        </DataTrigger>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#F5F5F5"/>
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </Button.Style>
-            </Button>
+        <Grid Grid.Row="0" Background="#0078D7">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
-            <Button Command="{Binding SelectSaveCommand}" 
-                    Height="80" Margin="0,0,0,30"
-                    Cursor="Hand">
-                <Button.Style>
-                    <Style TargetType="Button">
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="Button">
-                                    <Border x:Name="border" BorderBrush="Gray" BorderThickness="1" Background="White" CornerRadius="5">
-                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0">
-                                            <TextBlock Text="💾" FontSize="30" VerticalAlignment="Center"/>
-                                            <StackPanel Margin="20,0,0,0" VerticalAlignment="Center">
-                                                <TextBlock Text="Save to File" FontSize="18" FontWeight="SemiBold"/>
-                                                <TextBlock Text="Export as PDF or Text files" Foreground="Gray"/>
-                                            </StackPanel>
-                                        </StackPanel>
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <DataTrigger Binding="{Binding IsSaveSelected}" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#E6F7FF"/>
-                                            <Setter TargetName="border" Property="BorderBrush" Value="#1890FF"/>
-                                            <Setter TargetName="border" Property="BorderThickness" Value="2"/>
-                                        </DataTrigger>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#F5F5F5"/>
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </Button.Style>
-            </Button>
+            <!-- Right Section: Image -->
+            <Image Grid.Column="1" Source="/Assets/Images/sent.png" 
+                   Width="50" Height="50" Margin="0,0,30,0" RenderOptions.BitmapScalingMode="HighQuality"/>
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Content="&lt; Back" Command="{Binding GoBackCommand}" Width="100" Padding="10,5" Margin="0,0,10,0"/>
-
-                <Button Content="Next &gt;" 
-                        Command="{Binding NextCommand}" 
-                        IsEnabled="{Binding IsNextEnabled}"
-                        Width="100" Padding="10,5" Background="LightBlue"/>
+            <!-- Left Section: Title and Description -->
+            <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="30,0,0,0">
+                <TextBlock Text="Select the Output method" 
+                           Foreground="White" FontWeight="Bold" FontSize="13"/>
+                <TextBlock Text="Print or Save as a file of your design. Then click 'Next' to proceed." 
+                           Foreground="#E6E6E6" FontSize="12" Margin="0,5,0,0" TextWrapping="Wrap"/>
             </StackPanel>
+        </Grid>
 
-        </StackPanel>
+
+        <!-- Radio button stack for 2 options -->
+        <Grid Grid.Row="1" HorizontalAlignment="Stretch">
+            <StackPanel MinWidth="420" MaxWidth="700" Margin="40 20 40 0">
+
+                <Button Command="{Binding SelectPrintCommand}" 
+                        Height="80" Margin="0,0,0,15"
+                        Cursor="Hand">      
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="border" BorderBrush="Gray" BorderThickness="1" Background="White">
+                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0">
+                                                <Image Grid.Column="1" Source="/Assets/Images/print.png" 
+                                                   Width="50" Height="50" Margin="0,0,30,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+
+                                                <StackPanel Margin="20,0,0,0" VerticalAlignment="Center">
+                                                    <TextBlock Text="Print Labels" FontSize="16" FontWeight="SemiBold"/>
+                                                    <TextBlock Text="Send directly to a Zebra Printer" Foreground="Gray"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <DataTrigger Binding="{Binding IsPrintSelected}" Value="True">
+                                                <Setter TargetName="border" Property="Background" Value="#E6F7FF"/>
+                                                <Setter TargetName="border" Property="BorderBrush" Value="#1890FF"/>
+                                                <Setter TargetName="border" Property="BorderThickness" Value="2"/>
+                                            </DataTrigger>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="border" Property="Background" Value="#F5F5F5"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Button Command="{Binding SelectSaveCommand}" 
+                        Height="80" Margin="0,0,0,30"
+                        Cursor="Hand">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="border" BorderBrush="Gray" BorderThickness="1" Background="White">
+                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0">
+                                                <Image Grid.Column="1" Source="/Assets/Images/save.png" 
+                                                   Width="50" Height="50" Margin="0,0,30,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+
+                                                <StackPanel Margin="20,0,0,0" VerticalAlignment="Center">
+                                                    <TextBlock Text="Save to File" FontSize="16" FontWeight="SemiBold"/>
+                                                    <TextBlock Text="Export as PDF or Text files" Foreground="Gray"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <DataTrigger Binding="{Binding IsSaveSelected}" Value="True">
+                                                <Setter TargetName="border" Property="Background" Value="#E6F7FF"/>
+                                                <Setter TargetName="border" Property="BorderBrush" Value="#1890FF"/>
+                                                <Setter TargetName="border" Property="BorderThickness" Value="2"/>
+                                            </DataTrigger>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="border" Property="Background" Value="#F5F5F5"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+            </StackPanel>
+        </Grid>
+
+
+
+
+        <!-- Next, Back Button -->
+        <Border Grid.Row="2" Background="#D9D9D9" BorderBrush="#CCC" BorderThickness="0,1,0,0">
+            <Grid Margin="30,0,30,0" >
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Back button (No need this button for this interface) -->
+                <Button x:Name="BackButton" Grid.Column="0" Content="Back"
+                    VerticalAlignment="Center" HorizontalAlignment="Right"
+                    Height="25" Width="70" Command="{Binding GoBackCommand}" Margin="0 0 10 0" />
+
+                <!-- Next button -->
+                <Button x:Name="NextButton" Grid.Column="1" Content="Next"
+                    VerticalAlignment="Center" HorizontalAlignment="Right" 
+                    Command="{Binding NextCommand}" IsEnabled="{Binding IsNextEnabled}"
+                    Height="25" Width="70" />
+
+            </Grid>
+        </Border>
+        
     </Grid>
 </UserControl>
