@@ -25,6 +25,7 @@ namespace zebra_label_editor
             var selectionVm = new SelectionViewModel();
             var printConfigVm = new PrintConfigViewModel(); // Assumes empty constructor for now
             var saveConfigVm = new SaveConfigViewModel();   
+            var processingVm = new ProcessingViewModel();
 
             // 3. Create MainViewModel (The Traffic Cop)
             var mainVm = new MainViewModel(
@@ -32,7 +33,8 @@ namespace zebra_label_editor
                 mappingVm, 
                 selectionVm,
                 printConfigVm,
-                saveConfigVm
+                saveConfigVm,
+                processingVm
                 );
 
             // 4. Create and Show the Main Window
