@@ -84,5 +84,28 @@ namespace zebra_label_editor.ViewModels
                 }
             }
         }
+
+        // 1. EVENT: "Hey MainViewModel, I want to go back!"
+        public Action? NavigateBackRequested;
+
+
+        // 2. COMMAND: Bound to the UI Button
+        [RelayCommand]
+        private void GoBack()
+        {
+            // Fire the event!
+            NavigateBackRequested?.Invoke();
+        }
+
+        public Action? NavigateNextRequested;
+
+        [RelayCommand]
+        private void Next()
+        {
+            // Optional: Add validation here (e.g., check if all rows are mapped)
+
+            // Trigger the event to tell MainViewModel to move on
+            NavigateNextRequested?.Invoke();
+        }
     }
 }
