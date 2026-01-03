@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:zebra_label_editor.Views"
              xmlns:vm="clr-namespace:zebra_label_editor.ViewModels"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="380" d:DesignWidth="520" d:Background="#EBEBEB">
 
 
     <d:UserControl.DataContext>
@@ -17,66 +17,193 @@
         <BooleanToVisibilityConverter x:Key="BoolToVisConverter"/>
     </UserControl.Resources>
 
-    <Grid Background="White" Margin="20">
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="80"/>
+            <RowDefinition Height="*" MinHeight="250"/>
+            <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Text="Step 2: Map Data" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
+        <Grid Grid.Row="0" Background="#0078D7">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,10">
-            <Button Content="Load Excel Sheet..." 
-                    Command="{Binding LoadExcelCommand}"
-                    Padding="15,5" Background="#DDDDDD"/>
+            <!-- Right Section: Image -->
+            <Image Grid.Column="1" Source="/Assets/Images/edit-label.png" 
+           Width="50" Height="50" Margin="0,0,30,0" RenderOptions.BitmapScalingMode="HighQuality"/>
 
-            <TextBlock Text="{Binding ExcelFilePath, StringFormat='Loaded: {0}'}" 
-                       VerticalAlignment="Center" Margin="10,0,0,0" 
-                       Foreground="Gray" FontStyle="Italic"/>
-        </StackPanel>
+            <!-- Left Section: Title and Description -->
+            <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="30,0,0,0">
+                <TextBlock Text="Select your excel file" 
+                   Foreground="White" FontWeight="Bold" FontSize="13"/>
+                <TextBlock Text="Connect your Excel columns to the label placeholders. Then click 'Next' to proceed." 
+                   Foreground="#E6E6E6" FontSize="12" Margin="0,5,0,0" TextWrapping="Wrap"/>
+            </StackPanel>
+        </Grid>
 
-        <DataGrid Grid.Row="2" 
-                  ItemsSource="{Binding MappingRows}" 
-                  AutoGenerateColumns="False" 
-                  CanUserAddRows="False"
-                  HeadersVisibility="Column"
-                  GridLinesVisibility="Horizontal"
-                  BorderThickness="1" BorderBrush="LightGray">
+        <!-- StackPanel to arrange Browse option and mapping table -->
+        <Grid Grid.Row="1" HorizontalAlignment="Stretch">
+            <StackPanel MinWidth="420" MaxWidth="700" Margin="40 20 40 0">
 
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Label Field (Placeholder)" 
-                                    Binding="{Binding ZplPlaceholder}" 
-                                    Width="*" 
-                                    IsReadOnly="True"
-                                    FontWeight="SemiBold"/>
+                <!-- File selecting description text -->
+                <TextBlock x:Name="FileSelectDescription" FontSize="11" VerticalAlignment="Top" 
+                            Text="Choose your excel file here." 
+                            Margin="0 0 0 10" Height="16"/>
 
-                <DataGridTemplateColumn Header="Map to Source" Width="2*">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal" Margin="5">
 
-                                <ComboBox ItemsSource="{Binding AvailableSources}" 
-                                          SelectedItem="{Binding SelectedSource}"
-                                          Width="200"/>
+                <!-- File input box & Browse button -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="90"/>
+                    </Grid.ColumnDefinitions>
 
-                                <TextBox Text="{Binding ConstantValue, UpdateSourceTrigger=PropertyChanged}"
+                    <Grid Grid.Column="0">
+                        <TextBox Text="{Binding ExcelFilePath}" 
+                                 Height="25" VerticalContentAlignment="Center" Padding="5"
+                                 IsReadOnly="True" Background="White" BorderBrush="#CCC"/>
+
+                        <TextBlock Text="Select an excel file..." 
+                                   Foreground="LightGray" FontStyle="Normal" 
+                                   VerticalAlignment="Center" Margin="8,0,0,0" IsHitTestVisible="False">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ExcelFilePath}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ExcelFilePath}" Value="">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
+
+                    <Button Grid.Column="1" Content="Browse" 
+                            Command="{Binding LoadExcelCommand}"
+                            Margin="10,0,0,0" Height="25"/>
+                </Grid>
+
+                <!-- Table for mapping -->
+                <DataGrid Grid.Row="2" 
+                          ItemsSource="{Binding MappingRows}" 
+                          AutoGenerateColumns="False" 
+                          CanUserAddRows="False"
+                          HeadersVisibility="Column"
+                          GridLinesVisibility="Horizontal"
+                          BorderThickness="1" BorderBrush="LightGray" Background="White"
+                          Margin="0 10 0 0">
+
+                    <DataGrid.Columns>
+
+                        <DataGridTextColumn Header="Label Placeholder" 
+                                        Binding="{Binding ZplPlaceholder}" 
+                                        Width="1.5*" 
+                                        IsReadOnly="True"
+                                        FontWeight="SemiBold">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="Padding" Value="5,0"/>
+                                    <Setter Property="Foreground" Value="#0078D7"/>
+
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=IsSelected}" Value="True"/>
+
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGrid}, Path=IsKeyboardFocusWithin}" Value="True"/>
+                                            </MultiDataTrigger.Conditions>
+
+                                            <Setter Property="Foreground" Value="White"/>
+                                        </MultiDataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+
+                        <DataGridTemplateColumn Header="Data Source" Width="2*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <ComboBox ItemsSource="{Binding AvailableSources}" 
+                                          SelectedItem="{Binding SelectedSource, UpdateSourceTrigger=PropertyChanged}"
+                                          Margin="2" VerticalContentAlignment="Center">
+
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding}">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Foreground" Value="Black"/>
+
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding}" Value="Empty">
+                                                                    <Setter Property="Foreground" Value="Gray"/>
+                                                                    <Setter Property="FontWeight" Value="Bold"/>
+                                                                </DataTrigger>
+
+                                                                <DataTrigger Binding="{Binding}" Value="Constant Value">
+                                                                    <Setter Property="Foreground" Value="#D9534F"/>
+                                                                    <Setter Property="FontWeight" Value="Bold"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTemplateColumn Header="Constant Value" Width="1.5*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBox Text="{Binding ConstantValue, UpdateSourceTrigger=PropertyChanged}"
                                          Visibility="{Binding IsConstantSelected, Converter={StaticResource BoolToVisConverter}}"
-                                         Width="150" Margin="10,0,0,0"
-                                         ToolTip="Type the constant value here" 
-                                         VerticalContentAlignment="Center"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-        </DataGrid>
+                                         Margin="2" VerticalContentAlignment="Center"
+                                         BorderBrush="#999"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
 
-        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-            <Button Content="&lt; Back" Command="{Binding GoBackCommand}" Width="100" Padding="10,5" Margin="0,0,10,0"/>
-            <Button Content="Next &gt;" Command="{Binding NextCommand}" Width="100" Padding="10,5" Background="LightBlue"/>
-        </StackPanel>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+
+            </StackPanel>
+        </Grid>
+
+        <!-- Next, Back Button -->
+        <Border Grid.Row="2" Background="#D9D9D9" BorderBrush="#CCC" BorderThickness="0,1,0,0">
+            <Grid Margin="30,0,30,0" >
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Back button (No need this button for this interface) -->
+                <Button x:Name="BackButton" Grid.Column="0" Content="Back"
+                        VerticalAlignment="Center" HorizontalAlignment="Right"
+                        Height="25" Width="70" Command="{Binding GoBackCommand}" Margin="0 0 10 0" />
+
+                <!-- Next button -->
+                <Button x:Name="NextButton" Grid.Column="1" Content="Next"
+                        VerticalAlignment="Center" HorizontalAlignment="Right" 
+                        Command="{Binding NextCommand}"
+                        Height="25" Width="70" />
+               
+            </Grid>
+        </Border>
+
+
 
     </Grid>
 </UserControl>
