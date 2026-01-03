@@ -52,23 +52,44 @@
 
 
                 <!-- File input box & Browse button -->
+
+
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="70" />
+                        <ColumnDefinition Width="90"/>
                     </Grid.ColumnDefinitions>
 
-                    <!-- Textbox -->
-                    <TextBox x:Name="FilePath" Grid.Column="0" 
-                             VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0 0 10 0"
-                             Height="25" Width="Auto" Text="{Binding FilePath}"
-                             VerticalContentAlignment="Center" FontSize="11" IsReadOnly="True"/>
+                    <Grid Grid.Column="0">
+                        <TextBox Text="{Binding FilePath}" 
+                                 Height="25" VerticalContentAlignment="Center" Padding="5"
+                                 IsReadOnly="True" Background="White" BorderBrush="#CCC"/>
 
-                    <Button x:Name="BrowseButton" Grid.Column="1" Content="Browse"
-                            VerticalAlignment="Center" HorizontalAlignment="Right" 
-                            Command="{Binding BrowseCommand}" Height="25" Width="70" />
+                        <TextBlock Text="Select an label file..." 
+                                   Foreground="LightGray" FontStyle="Normal" 
+                                   VerticalAlignment="Center" Margin="8,0,0,0" IsHitTestVisible="False">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding FilePath}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding FilePath}" Value="">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
 
+                    <Button Grid.Column="2" Content="Browse"  Margin="10,0,0,0"
+                            Command="{Binding BrowseCommand}" Height="25" />
                 </Grid>
+
+
+
 
                 <!-- ERROR message in Red color -->
                 <TextBlock Text="{Binding ErrorMessage}" 
@@ -118,7 +139,7 @@
                 <!-- Back button (No need this button for this interface) -->
                 <Button x:Name="BackButton" Grid.Column="0" Content="Back"
                         VerticalAlignment="Center" HorizontalAlignment="Right" Visibility="Hidden"
-                        Height="25" Width="70" />
+                        Height="25" Width="70" Margin="0 0 10 0"/>
 
                 <!-- Next button -->
                 <Button x:Name="NextButton" Grid.Column="1" Content="Next"
