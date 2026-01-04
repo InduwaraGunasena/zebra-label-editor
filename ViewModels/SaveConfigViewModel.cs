@@ -16,15 +16,24 @@ namespace zebra_label_editor.ViewModels
         public Action? NavigateNextRequested;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsNextEnabled))]
         private string _savePath;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsNextEnabled))]
         private string _fileName;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsNextEnabled))]
         private string _selectedFormat;
 
-        public List<string> Formats { get; } = new List<string> { "ZPL Code (.zpl)", "Text File (.txt)" };
+        // Validation Logic: True only if everything is filled in
+        public bool IsNextEnabled =>
+            !string.IsNullOrWhiteSpace(FileName) &&
+            !string.IsNullOrWhiteSpace(SavePath) &&
+            !string.IsNullOrEmpty(SelectedFormat);
+
+        public List<string> Formats { get; } = new List<string> { "ZPL Code (.zpl)", "Text File (.txt)", "Print File (.prn)" };
 
         public SaveConfigViewModel()
         {
@@ -37,7 +46,7 @@ namespace zebra_label_editor.ViewModels
         {
             var dialog = new SaveFileDialog
             {
-                Filter = "ZPL Files|*.zpl|Text Files|*.txt",
+                Filter = "ZPL Files|*.zpl|Text Files|*.txt|Print Files|*.prn",
                 FileName = FileName
             };
 
@@ -58,6 +67,24 @@ namespace zebra_label_editor.ViewModels
             if (string.IsNullOrEmpty(FileName)) return;
 
             NavigateNextRequested?.Invoke();
+        }
+
+        public string GetFileExtension()
+        {
+            if (string.IsNullOrEmpty(SelectedFormat)) return ".zpl";
+
+            if (SelectedFormat.Contains(".txt"))
+            {
+                return ".txt";
+            }
+            else if (SelectedFormat.Contains(".prn"))
+            {
+                return ".prn";
+            }
+            else
+            {
+                return ".zpl"; // Default
+            }             
         }
     }
 }
