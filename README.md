@@ -29,21 +29,39 @@ A modern WPF application for automating Zebra Label (ZPL) printing and generatio
 
 ### 1. Import Template
 Validates the loaded file to ensure it contains valid ZPL commands (checks for `^XA` header).
-> ![Import View](Screenshots/start.png)
+<p align="center">
+<img src="Screenshots/start.png" alt="Import View" width="500"/>
+</p>
 
 ### 2. Map Data
 The core interface. Users map extracted placeholders to Excel headers or define constant values.
-> ![Mapping View](Screenshots/mapping.png)
+<p align="center">
+<img src="Screenshots/mapping.png" alt="Mapping View" width="500"/>
+</p>
 
 ### 3. Select Output
 Choose between printing directly to hardware or saving files.
-> ![Selection View](Screenshots/options.png)
+<p align="center">
+<img src="Screenshots/options.png" alt="Selection View" width="500"/>
+</p>
 
 ### 4. Configuration & Processing
 Configure printer settings or file paths, then watch the progress.
-> ![Saving View](Screenshots/saving.png)
-> ![Printing View](Screenshots/printing.png)
-> ![Processing View](Screenshots/processing.png)
+<p align="center">
+<img src="Screenshots/saving.png" alt="Saving View" width="500"/>
+</p>
+
+
+<p align="center">
+<img src="Screenshots/printing.png" alt="Printing View" width="500"/>
+</p>
+
+
+<p align="center">
+<img src="Screenshots/processing.png" alt="Processing View" width="500"/>
+</p>
+
+
 ---
 
 ## Architecture Overview
@@ -80,11 +98,8 @@ Prerequisites
 
 Installation
 1. Clone the repository.
-
 2. Open the solution in Visual Studio.
-
 3. Restore NuGet packages:
-
 ```Bash
 
 dotnet restore
@@ -98,11 +113,8 @@ Printer not listing? Ensure the printer is installed in Windows "Printers & Scan
 
 ## Contributing
 1. Fork the project.
-
 2. Create your Feature Branch (git checkout -b feature/AmazingFeature).
-
 3. Commit your changes (git commit -m 'Add some AmazingFeature').
-
 4. Push to the branch (git push origin feature/AmazingFeature).
 
 5. Open a Pull Request.
