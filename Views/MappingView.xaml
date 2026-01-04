@@ -38,7 +38,7 @@
             <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="30,0,0,0">
                 <TextBlock Text="Select your excel file" 
                    Foreground="White" FontWeight="Bold" FontSize="13"/>
-                <TextBlock Text="Connect your Excel columns to the label placeholders. Then click 'Next' to proceed." 
+                <TextBlock Text="Select an excel file. Connect your Excel columns to the label placeholders. Then click 'Next' to proceed." 
                    Foreground="#E6E6E6" FontSize="12" Margin="0,5,0,0" TextWrapping="Wrap"/>
             </StackPanel>
         </Grid>
