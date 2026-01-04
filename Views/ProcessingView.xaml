@@ -5,26 +5,102 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:zebra_label_editor.Views"
              xmlns:vm="clr-namespace:zebra_label_editor.ViewModels"
+             xmlns:conv="clr-namespace:zebra_label_editor.Converters"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="380" d:DesignWidth="520" d:Background="#EBEBEB">
 
+    <UserControl.Resources>
+        <conv:ProgressClipConverter x:Key="ProgressClipConverter" />
+    </UserControl.Resources>
 
     <d:UserControl.DataContext>
         <vm:ProcessingViewModel/>
     </d:UserControl.DataContext>
 
-    <Grid Background="White" Margin="20">
-        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="500">
-            <TextBlock Text="Processing Labels" FontSize="24" FontWeight="Bold" Margin="0,0,0,30" HorizontalAlignment="Center"/>
 
-            <ProgressBar Value="{Binding ProgressValue}" Maximum="100" Height="30" Margin="0,0,0,10" Foreground="LightBlue"/>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="80"/>
+            <RowDefinition Height="*" MinHeight="250"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
 
-            <TextBlock Text="{Binding StatusMessage}" HorizontalAlignment="Center" Foreground="Gray" Margin="0,0,0,30"/>
+        <Grid Grid.Row="0" Background="#0078D7">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
-            <Button Content="Finish &amp; Return Home" 
-                    Command="{Binding FinishCommand}" 
-                    IsEnabled="{Binding IsFinished}"
-                    Width="200" Padding="10,5" HorizontalAlignment="Center"/>
-        </StackPanel>
+            <!-- Right Section: Image -->
+            <Image Grid.Column="1" Source="/Assets/Images/install.png" 
+           Width="50" Height="50" Margin="0,0,30,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+
+            <!-- Left Section: Title and Description -->
+            <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="30,0,0,0">
+                <TextBlock Text="Creating labels..." 
+                   Foreground="White" FontWeight="Bold" FontSize="13"/>
+                <TextBlock Text="Wait until the task is finished. Then click 'Finish'." 
+                   Foreground="#E6E6E6" FontSize="12" Margin="0,5,0,0" TextWrapping="Wrap"/>
+            </StackPanel>
+        </Grid>
+
+
+        <!-- Progress bar and current status -->
+        <Grid Grid.Row="1" HorizontalAlignment="Stretch">
+            <StackPanel MinWidth="420" MaxWidth="700" Margin="40 20 40 0">
+                <TextBlock Text="Processing Labels" FontSize="16" FontWeight="Bold" Margin="0,0,0,20" HorizontalAlignment="Left"/>
+
+                <!-- Overlaid percentage on the ProgressBar. Black text underneath, white text clipped to the filled area on top -->
+                <Grid Height="30" Margin="0,0,0,10">
+                    <ProgressBar x:Name="MainProgressBar" Value="{Binding ProgressValue}" Maximum="100" Height="30" Foreground="#FF3A70FF" Background="LightGray" />
+
+                    <!-- Black text always visible (on light gray background) -->
+                    <TextBlock Text="{Binding ProgressValue, StringFormat={}{0}%}" Foreground="Black" FontWeight="Bold"
+                               VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+                    <!-- White text clipped to the filled (left) portion of the progress bar -->
+                    <TextBlock Text="{Binding ProgressValue, StringFormat={}{0}%}" Foreground="White" FontWeight="SemiBold"
+                               VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock.Clip>
+                            <MultiBinding Converter="{StaticResource ProgressClipConverter}">
+                                <Binding ElementName="MainProgressBar" Path="ActualWidth" />
+                                <Binding ElementName="MainProgressBar" Path="ActualHeight" />
+                                <Binding Path="ProgressValue" />
+                            </MultiBinding>
+                        </TextBlock.Clip>
+                    </TextBlock>
+                </Grid>
+
+                <TextBlock Text="{Binding StatusMessage}" HorizontalAlignment="Center" Foreground="Gray" Margin="0,0,0,30"/>
+
+            </StackPanel>
+        </Grid>
+
+
+        <!-- Next, Back Button -->
+        <Border Grid.Row="2" Background="#D9D9D9" BorderBrush="#CCC" BorderThickness="0,1,0,0">
+            <Grid Margin="30,0,30,0" >
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Back button (No need this button for this interface) -->
+                <Button x:Name="BackButton" Grid.Column="0" Content="Back" Visibility="Hidden"
+                 VerticalAlignment="Center" HorizontalAlignment="Right"
+                 Height="25" Width="70" Command="{Binding GoBackCommand}" Margin="0 0 10 0" />
+
+                <!-- Next button -->
+                <Button x:Name="FinishButton" Grid.Column="1" Content="Finish"
+                         VerticalAlignment="Center" HorizontalAlignment="Right" 
+                         Command="{Binding FinishCommand}" 
+                         IsEnabled="{Binding IsFinished}"
+                         Height="25" Width="70" />
+
+            </Grid>
+
+        </Border>
+
     </Grid>
 </UserControl>
