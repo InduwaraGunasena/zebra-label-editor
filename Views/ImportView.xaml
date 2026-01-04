@@ -64,7 +64,7 @@
                                  IsReadOnly="True" Background="White" BorderBrush="#CCC"/>
 
                         <TextBlock Text="Select an label file..." 
-                                   Foreground="LightGray" FontStyle="Normal" 
+                                   Foreground="Gray" FontStyle="Normal" 
                                    VerticalAlignment="Center" Margin="8,0,0,0" IsHitTestVisible="False">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
