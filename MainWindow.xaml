@@ -7,6 +7,7 @@
         xmlns:views="clr-namespace:zebra_label_editor.Views" 
         mc:Ignorable="d"
         Title="Zebra Label Editor" 
+        Icon="/Assets/Icons/app_icon.ico"
         Height="440" Width="540"
         MinHeight="440" MinWidth="540"
         Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
