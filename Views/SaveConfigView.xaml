@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:zebra_label_editor.Views"
              xmlns:vm="clr-namespace:zebra_label_editor.ViewModels"
              mc:Ignorable="d" 
-              d:DesignHeight="380" d:DesignWidth="520" d:Background="#EBEBEB">
+             d:DesignHeight="380" d:DesignWidth="520" d:Background="#EBEBEB">
     
     <d:UserControl.DataContext>
         <vm:SaveConfigViewModel/>
@@ -49,7 +49,7 @@
                 <TextBlock Text="Format:" Margin="0,0,0,5" Foreground="Gray"/>
                 <ComboBox ItemsSource="{Binding Formats}" 
                           SelectedItem="{Binding SelectedFormat}"
-                          Padding="5" Margin="0,0,0,15" Height="30"/>
+                          Padding="5" Margin="0,0,0,15" Height="30" VerticalContentAlignment="Center"/>
 
                 <TextBlock Text="Save Location:" Margin="0,0,0,5" Foreground="Gray"/>
              
