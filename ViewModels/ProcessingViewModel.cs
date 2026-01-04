@@ -33,84 +33,128 @@ namespace zebra_label_editor.ViewModels
         // --- PRINTING LOGIC ---
         public async void StartPrinting(string zplTemplate, string excelPath, List<MappingItem> mapping, string printerName)
         {
-            IsFinished = false;
-            ProgressValue = 0;
+            InitializeProcess();
 
             await Task.Run(async () =>
             {
-                var dataTable = ReadExcel(excelPath);
-                int totalRows = dataTable.Rows.Count;
+                // 1. Determine if we should use Excel or just print 1 label
+                // Rule: Must have an Excel path AND at least one column mapped
+                bool useExcelData = !string.IsNullOrEmpty(excelPath) &&
+                                    mapping.Any(m => !m.IsConstantSelected && m.SelectedSource != "Empty");
 
-                for (int i = 0; i < totalRows; i++)
+                try
                 {
-                    // 1. Create the Data Dictionary for this row
-                    var rowData = GetRowData(dataTable.Rows[i], mapping);
-
-                    // 2. Merge Data
-                    string labelZpl = _zplService.MergeData(zplTemplate, rowData);
-
-                    // 3. Send to Printer (Raw ZPL)
-                    try
+                    if (useExcelData)
                     {
-                        bool success = RawPrinterHelper.SendStringToPrinter(printerName, labelZpl);
-                        if (!success) throw new Exception("Printer error.");
+                        // --- MULTIPLE LABELS (From Excel) ---
+                        var dataTable = ReadExcel(excelPath);
+                        int totalRows = dataTable.Rows.Count;
+
+                        for (int i = 0; i < totalRows; i++)
+                        {
+                            var rowData = GetLabelData(mapping, dataTable.Rows[i]);
+                            string labelZpl = _zplService.MergeData(zplTemplate, rowData);
+
+                            PrintZpl(printerName, labelZpl);
+
+                            UpdateProgress(i + 1, totalRows, "Printing");
+                            await Task.Delay(50); // Small delay for spooler
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        StatusMessage = $"Error printing label {i + 1}: {ex.Message}";
-                        return; // Stop on error?
+                        // --- SINGLE LABEL (Constant/Empty only) ---
+                        // We pass 'null' for the DataRow because we don't need one
+                        var rowData = GetLabelData(mapping, null);
+                        string labelZpl = _zplService.MergeData(zplTemplate, rowData);
+
+                        PrintZpl(printerName, labelZpl);
+                        UpdateProgress(1, 1, "Printing");
                     }
 
-                    // 4. Update Progress
-                    UpdateProgress(i + 1, totalRows, "Printing");
-
-                    // Small delay to prevent UI freezing / Spooler flooding
-                    await Task.Delay(50);
+                    FinalizeProcess("Printing Completed!");
                 }
-
-                FinalizeProcess("Printing Completed!");
+                catch (Exception ex)
+                {
+                    StatusMessage = $"Error: {ex.Message}";
+                }
             });
         }
 
         // --- SAVING LOGIC ---
-        public async void StartSaving(string zplTemplate, string excelPath, List<MappingItem> mapping, string saveFolder, string baseFileName)
+        public async void StartSaving(
+            string zplTemplate, 
+            string excelPath, 
+            List<MappingItem> mapping, 
+            string saveFolder, 
+            string baseFileName,
+            string extension)
         {
-            IsFinished = false;
-            ProgressValue = 0;
+            InitializeProcess();
 
             await Task.Run(async () =>
             {
-                var dataTable = ReadExcel(excelPath);
-                int totalRows = dataTable.Rows.Count;
+                bool useExcelData = !string.IsNullOrEmpty(excelPath) &&
+                                    mapping.Any(m => !m.IsConstantSelected && m.SelectedSource != "Empty");
 
-                // We will create one big text file containing all labels (Standard for ZPL batches)
-                // OR you can save individual files. Let's do one big file for now.
                 var fullBatchZpl = new System.Text.StringBuilder();
 
-                for (int i = 0; i < totalRows; i++)
+                try
                 {
-                    var rowData = GetRowData(dataTable.Rows[i], mapping);
-                    string labelZpl = _zplService.MergeData(zplTemplate, rowData);
+                    if (useExcelData)
+                    {
+                        // --- MULTIPLE LABELS ---
+                        var dataTable = ReadExcel(excelPath);
+                        int totalRows = dataTable.Rows.Count;
 
-                    fullBatchZpl.AppendLine(labelZpl);
+                        for (int i = 0; i < totalRows; i++)
+                        {
+                            var rowData = GetLabelData(mapping, dataTable.Rows[i]);
+                            string labelZpl = _zplService.MergeData(zplTemplate, rowData);
+                            fullBatchZpl.AppendLine(labelZpl);
 
-                    UpdateProgress(i + 1, totalRows, "Generating");
-                    await Task.Delay(10); // Tiny delay for UI
+                            UpdateProgress(i + 1, totalRows, "Generating");
+                        }
+                    }
+                    else
+                    {
+                        // --- SINGLE LABEL ---
+                        var rowData = GetLabelData(mapping, null);
+                        string labelZpl = _zplService.MergeData(zplTemplate, rowData);
+                        fullBatchZpl.AppendLine(labelZpl);
+
+                        UpdateProgress(1, 1, "Generating");
+                    }
+
+                    // Write File
+                    string finalPath = Path.Combine(saveFolder, baseFileName + extension);
+                    File.WriteAllText(finalPath, fullBatchZpl.ToString());
+
+                    FinalizeProcess($"Saved to {finalPath}");
                 }
-
-                // Write to File
-                string finalPath = Path.Combine(saveFolder, baseFileName + ".zpl");
-                File.WriteAllText(finalPath, fullBatchZpl.ToString());
-
-                FinalizeProcess($"Saved to {finalPath}");
+                catch (Exception ex)
+                {
+                    StatusMessage = $"Error: {ex.Message}";
+                }
             });
         }
 
         // --- HELPER METHODS ---
 
+        private void InitializeProcess()
+        {
+            IsFinished = false;
+            ProgressValue = 0;
+            StatusMessage = "Starting...";
+        }
+
+
         private DataTable ReadExcel(string path)
         {
+            // CRITICAL: This line prevents the "Value cannot be null" error
+            // We only call this method if path is confirmed not null in the calling method
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
             using (var stream = File.Open(path, FileMode.Open, FileAccess.Read))
             using (var reader = ExcelReaderFactory.CreateReader(stream))
             {
@@ -122,31 +166,49 @@ namespace zebra_label_editor.ViewModels
             }
         }
 
-        private Dictionary<string, string> GetRowData(DataRow row, List<MappingItem> mapping)
+        // Helper to extract data. Row can be null!
+        private Dictionary<string, string> GetLabelData(List<MappingItem> mapping, DataRow? row)
         {
             var result = new Dictionary<string, string>();
+
             foreach (var map in mapping)
             {
-                string value = "";
+                string value = ""; // Default to empty
 
                 if (map.IsConstantSelected)
                 {
-                    value = map.ConstantValue;
+                    // Case 1: Constant Value (Always used)
+                    value = map.ConstantValue ?? "";
                 }
-                else if (map.SelectedSource != "<Empty>" && row.Table.Columns.Contains(map.SelectedSource))
+                else if (map.SelectedSource == "Empty")
                 {
-                    value = row[map.SelectedSource].ToString();
+                    // Case 2: Explicitly Empty
+                    value = "";
+                }
+                else if (row != null && row.Table.Columns.Contains(map.SelectedSource))
+                {
+                    // Case 3: Excel Column (Only if row exists)
+                    value = row[map.SelectedSource].ToString() ?? "";
                 }
 
-                // Add to dictionary (e.g., "[Product]" -> "Wireless Mouse")
+                // If row is null but we mapped a column, value remains "" (Safe fallback)
+
                 result[map.ZplPlaceholder] = value;
             }
             return result;
         }
 
+        private void PrintZpl(string printerName, string zplData)
+        {
+            bool success = RawPrinterHelper.SendStringToPrinter(printerName, zplData);
+            if (!success) throw new Exception("Printer error. Check connection.");
+        }
+
         private void UpdateProgress(int current, int total, string action)
         {
-            ProgressValue = (double)current / total * 100;
+            // Calculate percentage
+            double percent = (double)current / total * 100;
+            ProgressValue = percent;
             StatusMessage = $"{action}: {current} of {total} labels...";
         }
 
