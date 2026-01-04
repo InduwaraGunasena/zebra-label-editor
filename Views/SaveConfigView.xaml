@@ -44,7 +44,8 @@
             <StackPanel MinWidth="420" MaxWidth="700" Margin="40 20 40 0">
 
                 <TextBlock Text="File Name:" Margin="0,0,0,5" Foreground="Gray"/>
-                <TextBox Text="{Binding FileName}" Padding="5" Margin="0,0,0,15" Height="30"/>
+                <TextBox Text="{Binding FileName, UpdateSourceTrigger=PropertyChanged}"
+                         Padding="5" Margin="0,0,0,15" Height="30"/>
 
                 <TextBlock Text="Format:" Margin="0,0,0,5" Foreground="Gray"/>
                 <ComboBox ItemsSource="{Binding Formats}" 
@@ -109,6 +110,7 @@
                 <Button x:Name="NextButton" Grid.Column="1" Content="Next"
                          VerticalAlignment="Center" HorizontalAlignment="Right" 
                          Command="{Binding NextCommand}"
+                        IsEnabled="{Binding IsNextEnabled}"
                          Height="25" Width="70" />
 
             </Grid>
