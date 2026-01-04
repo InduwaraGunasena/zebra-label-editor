@@ -8,7 +8,9 @@
         mc:Ignorable="d"
         Title="Zebra Label Editor" 
         Height="440" Width="540"
-        MinHeight="440" MinWidth="540">
+        MinHeight="440" MinWidth="540"
+        Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+        WindowStartupLocation="CenterScreen">
     
     <Grid>
         <ContentControl Content="{Binding CurrentViewModel}" />
