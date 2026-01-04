@@ -115,17 +115,25 @@ namespace zebra_label_editor.ViewModels
         private void StartSaveProcess()
         {
             // GATHER DATA
-            string zplTemplate = System.IO.File.ReadAllText(_importVm.FilePath);
+            string zplTemplate = "";
+            // Safety check: ensure file still exists or use cached content
+            if (System.IO.File.Exists(_importVm.FilePath))
+            {
+                zplTemplate = System.IO.File.ReadAllText(_importVm.FilePath);
+            }
+
             string excelPath = _mappingVm.ExcelFilePath;
             var mapping = _mappingVm.MappingRows.ToList();
             string savePath = _saveConfigVm.SavePath;
             string fileName = _saveConfigVm.FileName;
 
+            string extension = _saveConfigVm.GetFileExtension();
+
             // SWITCH VIEW
             CurrentViewModel = _processingVm;
 
             // START WORK
-            _processingVm.StartSaving(zplTemplate, excelPath, mapping, savePath, fileName);
+            _processingVm.StartSaving(zplTemplate, excelPath, mapping, savePath, fileName, extension);
         }
     }
 }
