@@ -2,9 +2,6 @@
 
 A modern WPF application for automating Zebra Label (ZPL) printing and generation. This tool allows users to map dynamic fields in a ZPL template to columns in an Excel sheet, enabling batch printing or mass generation of label files.
 
-![Import View Screenshot](Screenshots/import_view.png) 
-*(Place screenshot of the Import View here)*
-
 ## Features
 
 * **ZPL Template Parsing:** Automatically detects placeholders (e.g., `[ProductCode]`) inside raw ZPL files.
@@ -14,8 +11,8 @@ A modern WPF application for automating Zebra Label (ZPL) printing and generatio
     * Set static "Constant Values" for specific fields.
     * Leave fields empty if needed.
 * **Dual Output Modes:**
-    * 🖨️ **Direct Print:** Sends raw ZPL code directly to any installed Zebra printer (bypassing the print driver's image processing).
-    * 💾 **Save to File:** Generates batch files (`.zpl`, `.txt`, `.prn`) for later processing.
+    * **Direct Print:** Sends raw ZPL code directly to any installed Zebra printer (bypassing the print driver's image processing).
+    * **Save to File:** Generates batch files (`.zpl`, `.txt`, `.prn`) for later processing.
 * **Batch Processing:** Handles single-label generation or bulk processing with a responsive progress bar.
 
 ## Technology Stack
@@ -32,20 +29,21 @@ A modern WPF application for automating Zebra Label (ZPL) printing and generatio
 
 ### 1. Import Template
 Validates the loaded file to ensure it contains valid ZPL commands (checks for `^XA` header).
-> ![Import View](Screenshots/import_view.png)
+> ![Import View](Screenshots/start.png)
 
 ### 2. Map Data
 The core interface. Users map extracted placeholders to Excel headers or define constant values.
-> ![Mapping View](Screenshots/mapping_view.png)
+> ![Mapping View](Screenshots/mapping.png)
 
 ### 3. Select Output
 Choose between printing directly to hardware or saving files.
-> ![Selection View](Screenshots/selection_view.png)
+> ![Selection View](Screenshots/options.png)
 
 ### 4. Configuration & Processing
 Configure printer settings or file paths, then watch the progress.
-> ![Processing View](Screenshots/processing_view.png)
-
+> ![Saving View](Screenshots/saving.png)
+> ![Printing View](Screenshots/printing.png)
+> ![Processing View](Screenshots/processing.png)
 ---
 
 ## Architecture Overview
@@ -99,15 +97,15 @@ Printer not listing? Ensure the printer is installed in Windows "Printers & Scan
 "Value cannot be null" Error during processing? This usually happens if the Excel file path is lost. Ensure MappingViewModel retains its state. (Fixed in v1.0 logic by passing data explicitly via MainViewModel).
 
 ## Contributing
-Fork the project.
+1. Fork the project.
 
-Create your Feature Branch (git checkout -b feature/AmazingFeature).
+2. Create your Feature Branch (git checkout -b feature/AmazingFeature).
 
-Commit your changes (git commit -m 'Add some AmazingFeature').
+3. Commit your changes (git commit -m 'Add some AmazingFeature').
 
-Push to the branch (git push origin feature/AmazingFeature).
+4. Push to the branch (git push origin feature/AmazingFeature).
 
-Open a Pull Request.
+5. Open a Pull Request.
 
 ## License
 Distributed under the MIT License. See LICENSE for more information.
